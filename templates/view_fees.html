@@ -1,0 +1,30 @@
+<h2>Your Fee History</h2>
+
+<table border="1" cellpadding="8">
+  <tr>
+    <th>Date</th>
+    <th>Amount</th>
+    <th>Status</th>
+    <th>Due Date</th>
+  </tr>
+  {% for fee in fees %}
+    <tr>
+      <td>{{ fee.date }}</td>
+      <td>₹{{ fee.amount }}</td>
+      <td>
+        {% if fee.paid %} Paid {% else %} Unpaid {% endif %}
+      </td>
+      <td>{{ fee.due_date }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="4">No fee records available.</td></tr>
+  {% endfor %}
+</table>
+
+{% if next_due %}
+  <p style="margin-top: 20px;">
+    <strong>Next Due:</strong> ₹{{ next_due.amount }} on {{ next_due.due_date }}
+  </p>
+{% else %}
+  <p>No upcoming due payments.</p>
+{% endif %}

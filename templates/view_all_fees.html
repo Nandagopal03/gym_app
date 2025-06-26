@@ -1,0 +1,24 @@
+<h2>All Client Fee Records</h2>
+
+<table border="1" cellpadding="8">
+  <tr>
+    <th>Client</th>
+    <th>Date Added</th>
+    <th>Amount</th>
+    <th>Status</th>
+    <th>Due Date</th>
+  </tr>
+  {% for fee in fees %}
+    <tr>
+      <td>{{ fee.client.username }}</td>
+      <td>{{ fee.date }}</td>
+      <td>₹{{ fee.amount }}</td>
+      <td>
+        {% if fee.paid %} Paid {% else %} Unpaid {% endif %}
+      </td>
+      <td>{{ fee.due_date }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="5">No fee records available.</td></tr>
+  {% endfor %}
+</table>
