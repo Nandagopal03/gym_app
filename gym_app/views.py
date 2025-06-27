@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group, User
-from .models import Attendance, Fee
-from .forms import AttendanceForm
+from .models import Attendance, Fee, ClientProfile
+from .forms import AttendanceForm, ClientProfileForm
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.timezone import now
 
@@ -90,3 +90,31 @@ def view_fees(request):
             'next_due': next_due
         })
     return redirect('dashboard')
+
+
+
+@login_required
+def view_profile(request):
+    if not request.user.groups.filter(name='Client').exists():
+        return redirect('dashboard')
+
+    profile = get_object_or_404(ClientProfile, user=request.user)
+    return render(request, 'view_profile.html', {'profile': profile})
+
+
+@login_required
+def edit_profile(request):
+    if not request.user.groups.filter(name='Client').exists():
+        return redirect('dashboard')
+
+    profile, created = ClientProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = ClientProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('view_profile')
+    else:
+        form = ClientProfileForm(instance=profile)
+
+    return render(request, 'edit_profile.html', {'form': form})

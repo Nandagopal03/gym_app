@@ -1,0 +1,18 @@
+<h2>Your Profile</h2>
+
+{% if profile.profile_photo %}
+  <img src="{{ profile.profile_photo.url }}" width="150" style="border-radius:10px;"><br>
+{% endif %}
+
+<p><strong>Full Name:</strong> {{ profile.full_name }}</p>
+<p><strong>Gender:</strong> {{ profile.gender }}</p>
+<p><strong>Age:</strong> {{ profile.age }}</p>
+<p><strong>Phone:</strong> {{ profile.phone }}</p>
+<p><strong>Alt Phone:</strong> {{ profile.alt_phone }}</p>
+<p><strong>Address:</strong> {{ profile.address }}</p>
+<p><strong>Height:</strong> {{ profile.height }} cm</p>
+<p><strong>Weight:</strong> {{ profile.weight }} kg</p>
+<p><strong>Medical Condition:</strong> {{ profile.medical_condition }}</p>
+
+<br>
+<a href="{% url 'edit_profile' %}">Edit Profile</a>

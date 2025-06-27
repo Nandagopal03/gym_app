@@ -12,6 +12,8 @@
 {% elif is_client %}
   <p><strong>You are a Client.</strong></p>
   <ul>
+    <li><a href="{% url 'view_profile' %}">Profile</a></li>
+
     <li><a href="{% url 'view_attendance' %}">View Your Attendance</a></li>
     <li><a href="{% url 'view_fees' %}">View Your Fee Records</a></li>
 
