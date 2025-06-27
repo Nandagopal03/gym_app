@@ -1,0 +1,18 @@
+<h2>Client List</h2>
+
+<form method="get">
+  <input type="text" name="q" placeholder="Search by username or name" value="{{ query }}">
+  <button type="submit">Search</button>
+</form>
+
+<ul>
+  {% for client in clients %}
+    <li>
+      <a href="{% url 'view_client_profile' client.user.id %}">
+        {{ client.full_name }} ({{ client.user.username }})
+      </a>
+    </li>
+  {% empty %}
+    <li>No clients found.</li>
+  {% endfor %}
+</ul>

@@ -1,0 +1,15 @@
+<h2>📢 Announcements</h2>
+
+{% for a in announcements %}
+  <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+    <h4>{{ a.title }}</h4>
+    <p>{{ a.message }}</p>
+    <small>Posted by: {{ a.posted_by.username }} on {{ a.created_at|date:"d M Y H:i" }}</small>
+  </div>
+{% empty %}
+  <p>No announcements yet.</p>
+{% endfor %}
+
+{% if is_trainer %}
+  <a href="{% url 'create_announcement' %}">+ Post Announcement</a>
+{% endif %}

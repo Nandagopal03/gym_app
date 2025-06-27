@@ -3,23 +3,30 @@
 {% if is_trainer %}
   <p><strong>You are a Trainer.</strong></p>
   <ul>
+    <li><a href="{% url 'announcements_list' %}">Announcements</a></li>
+
     <li><a href="{% url 'mark_attendance' %}">Mark Attendance</a></li>
     <li><a href="{% url 'view_all_fees' %}">View All Client Fees</a></li>
+    {% if is_trainer %}
+  <li><a href="{% url 'client_list' %}">View All Clients</a></li>
+{% endif %}
 
-    <li>Coming soon: Add Diet Plan, View Clients</li>
   </ul>
 
 {% elif is_client %}
   <p><strong>You are a Client.</strong></p>
   <ul>
+    <li><a href="{% url 'announcements_list' %}">Announcements</a></li>
+
     <li><a href="{% url 'view_profile' %}">Profile</a></li>
 
     <li><a href="{% url 'view_attendance' %}">View Your Attendance</a></li>
     <li><a href="{% url 'view_fees' %}">View Your Fee Records</a></li>
+    <li><a href="{% url 'view_my_diet' %}">View My Diet Plan</a></li>
 
-    <li>Coming soon: View Diet Plan, Track Progress</li>
   </ul>
 
 {% else %}
   <p>You are not assigned to any role.</p>
 {% endif %}
+

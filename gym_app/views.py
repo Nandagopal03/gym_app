@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group, User
-from .models import Attendance, Fee, ClientProfile
-from .forms import AttendanceForm, ClientProfileForm
+from .models import Attendance, Fee, ClientProfile, DietPlan, Announcement
+from .forms import AttendanceForm, ClientProfileForm, DietPlanForm, AnnouncementForm
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.timezone import now
 
@@ -118,3 +118,86 @@ def edit_profile(request):
         form = ClientProfileForm(instance=profile)
 
     return render(request, 'edit_profile.html', {'form': form})
+
+
+from django.db.models import Q
+
+@login_required
+@user_passes_test(is_trainer)
+def client_list(request):
+    query = request.GET.get('q')
+    clients = ClientProfile.objects.all()
+
+    if query:
+        clients = clients.filter(
+            Q(user__username__icontains=query) |
+            Q(full_name__icontains=query)
+        )
+
+    return render(request, 'trainer/client_list.html', {
+        'clients': clients,
+        'query': query
+    })
+    
+@login_required
+@user_passes_test(is_trainer)
+def view_client_profile(request, user_id):
+    profile = get_object_or_404(ClientProfile, user__id=user_id)
+    return render(request, 'trainer/view_client_profile.html', {'profile': profile})
+
+
+@login_required
+@user_passes_test(is_trainer)
+def edit_diet_plan(request, user_id):
+    client = get_object_or_404(User, id=user_id)
+    diet, created = DietPlan.objects.get_or_create(client=client)
+
+    if request.method == 'POST':
+        form = DietPlanForm(request.POST, instance=diet)
+        if form.is_valid():
+            plan = form.save(commit=False)
+            plan.created_by = request.user
+            plan.save()
+            return redirect('client_list')  # or view_client_profile
+    else:
+        form = DietPlanForm(instance=diet)
+
+    return render(request, 'trainer/edit_diet_plan.html', {
+        'form': form,
+        'client': client
+    })
+    
+@login_required
+def view_my_diet_plan(request):
+    if not request.user.groups.filter(name='Client').exists():
+        return redirect('dashboard')
+
+    try:
+        plan = request.user.diet_plan
+    except DietPlan.DoesNotExist:
+        plan = None
+
+    return render(request, 'client/view_diet_plan.html', {'plan': plan})
+
+@login_required
+def announcements_list(request):
+    announcements = Announcement.objects.all().order_by('-created_at')
+    is_trainer = request.user.groups.filter(name='Trainer').exists()  # or your logic
+    return render(request, 'announcements/list.html', {
+        'announcements': announcements,
+        'is_trainer': is_trainer,
+    })
+
+@login_required
+@user_passes_test(is_trainer)
+def create_announcement(request):
+    if request.method == 'POST':
+        form = AnnouncementForm(request.POST)
+        if form.is_valid():
+            announcement = form.save(commit=False)
+            announcement.posted_by = request.user
+            announcement.save()
+            return redirect('announcements_list')
+    else:
+        form = AnnouncementForm()
+    return render(request, 'announcements/create.html', {'form': form})

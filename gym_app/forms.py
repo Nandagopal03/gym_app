@@ -1,7 +1,7 @@
 # gym_app/forms.py
 
 from django import forms 
-from .models import Attendance, Fee, ClientProfile
+from .models import Attendance, Fee, ClientProfile, DietPlan, Announcement
 from django.contrib.auth.models import User
 
 class AttendanceForm(forms.Form):
@@ -26,3 +26,22 @@ class ClientProfileForm(forms.ModelForm):
             'address': forms.Textarea(attrs={'rows': 2}),
             'medical_condition': forms.Textarea(attrs={'rows': 2}),
         }
+        
+        
+
+
+class DietPlanForm(forms.ModelForm):
+    class Meta:
+        model = DietPlan
+        fields = ['morning', 'afternoon', 'evening', 'night']
+        widgets = {
+            'morning': forms.Textarea(attrs={'rows': 2}),
+            'afternoon': forms.Textarea(attrs={'rows': 2}),
+            'evening': forms.Textarea(attrs={'rows': 2}),
+            'night': forms.Textarea(attrs={'rows': 2}),
+        }
+
+class AnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = Announcement
+        fields = ['title', 'message']

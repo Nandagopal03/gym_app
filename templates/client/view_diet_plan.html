@@ -1,0 +1,11 @@
+<h2>Your Diet Plan</h2>
+
+{% if plan %}
+  <p><strong>Morning:</strong> {{ plan.morning }}</p>
+  <p><strong>Afternoon:</strong> {{ plan.afternoon }}</p>
+  <p><strong>Evening:</strong> {{ plan.evening }}</p>
+  <p><strong>Night:</strong> {{ plan.night }}</p>
+  <p><em>Last updated: {{ plan.updated_on }}</em></p>
+{% else %}
+  <p>Your trainer hasn't added a diet plan yet.</p>
+{% endif %}
